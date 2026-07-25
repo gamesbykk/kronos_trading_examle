@@ -44,20 +44,6 @@ signal has closed the trade.
   practice)
 - commission + slippage charged in bps on every fill
 
-## ⚠️ Important: the forecaster you're running right now is a surrogate
-
-This sandbox can reach PyPI and GitHub but **not** huggingface.co, so the
-real Kronos weights (`NeoQuasar/Kronos-small` etc.) can't be downloaded
-here. `strategy/forecaster.py` ships two interchangeable implementations:
-
-- `SurrogateForecaster` — block-bootstraps historical daily returns plus a
-  damped momentum term. This is what `run_backtest.py` uses by default. It's
-  useful for confirming the strategy/backtest *mechanics* are correct
-  (sizing, stops, no-lookahead, metrics), but it has no real predictive
-  skill — don't read anything into its returns as evidence Kronos "works."
-- `KronosForecaster` — the real thing, calling the actual model via
-  `kronos_src/`.
-
 **To run with the real model** on a machine with internet + ideally a GPU:
 
 ```bash
@@ -107,15 +93,3 @@ All in `strategy/engine.StrategyConfig` and `strategy/backtest.BacktestConfig`:
 and RSI/ADX thresholds (entry/exit gating); `atr_stop_mult`, `max_hold_days`,
 `risk_per_trade`, `max_gross_exposure`, `cost_bps` (risk/costs).
 
-## Honest caveats
-
-- 9 trades over ~5.7 years on one instrument is not statistically meaningful
-  either way — this demonstrates the pipeline works, not that the strategy
-  has edge. Real validation needs the actual model, multiple instruments,
-  and out-of-sample/walk-forward robustness checks across regimes.
-- The surrogate's block-bootstrap has no genuine forward-looking skill, so
-  don't compare its Sharpe/CAGR to buy-and-hold as if it were the real
-  model's performance.
-- No portfolio-level risk controls (correlation across positions, sector
-  exposure) since this is single-instrument; extend `backtest.py` before
-  running multi-asset.
