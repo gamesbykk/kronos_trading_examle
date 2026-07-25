@@ -1,0 +1,8 @@
+pandas
+numpy
+matplotlib
+ta
+scipy
+
+# For --real-kronos, additionally: pip install -r kronos_src/requirements.txt
+# (torch, einops, huggingface_hub, safetensors, tqdm)
